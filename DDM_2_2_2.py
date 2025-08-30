@@ -8,12 +8,13 @@ import warnings
 from tqdm import tqdm
 warnings.filterwarnings('ignore')  # 忽略拟合过程中的警告
 
-RESULT_PATH = os.path.join(os.path.dirname(__file__), 'results','DDM_2_2_2')
-os.makedirs(RESULT_PATH, exist_ok=True)
+RESULT_PATH = os.path.join(os.path.dirname(__file__), 'results')
+os.makedirs(os.path.join(RESULT_PATH,'DDM_2_2_2'), exist_ok=True)
+ddmPath = os.path.join(RESULT_PATH,'DDM_2_2_2')
 
 def deletePreviewsFiles():
     # 如果Result path内存在任何文件或文件夹，则删除resultpath内所有文件和文件夹
-    for root, dirs, files in os.walk(RESULT_PATH, topdown=False):
+    for root, dirs, files in os.walk(ddmPath, topdown=False):
         for name in files:
             os.remove(os.path.join(root, name))
         for name in dirs:
@@ -33,7 +34,7 @@ def main():
     # 'subj_idx', 'induction', 'prime_valence', 'target_valence', 'rt', 'response'
     # 其中response编码为0(消极)或1(积极)
 
-    df = pd.read_excel(os.path.join(os.path.dirname(__file__), 'rawData', 'normal', 'merged.xlsx'))
+    df = pd.read_excel(os.path.join(RESULT_PATH, 'mergedFile', 'merged_all.xlsx'))
 
     # 初始化一个字典来存储所有结果
     results = pd.DataFrame()
@@ -62,7 +63,7 @@ def main():
                 (df['subj_idx'] == subject) &
                 (df['condition'] == cond)
             ]
-
+            group = condition_data['group'].unique()[0]
 
             induction = condition_data['induction'].unique()[0]
             prime_valence = condition_data['prime_valence'].unique()[0]
@@ -122,6 +123,7 @@ def main():
                     'nondectime': float(pars['nondectime']),
                     'n_trials': len(condition_data),
                     'accuracy': condition_data['response'].mean(),
+                    'group': group,
                     'error': None
                 }
                 print(f'it\'s ok in condition {cond}')
@@ -141,16 +143,17 @@ def main():
                     'nondectime': float(pars['nondectime']),
                     'n_trials': len(condition_data),
                     'accuracy': condition_data['response'].mean(),
+                    'group': group,
                     'error': str(e)
                 }
 
         df_subject = pd.DataFrame(param).T
-        df_subject.to_csv(os.path.join(RESULT_PATH, f'subj_idx_{subject}.csv'), index=False)
+        df_subject.to_csv(os.path.join(ddmPath, f'subj_idx_{subject}.csv'), index=False)
         results = pd.concat([results, df_subject], axis=0)
 
 
     # 保存结果到CSV文件
-    results.to_csv(os.path.join(RESULT_PATH, 'traditional_ddm_results_2_2_2.csv'), index=False)
+    results.to_csv(os.path.join(ddmPath, 'traditional_ddm_results_2_2_2.csv'), index=False)
 
     print("拟合完成! 结果已保存到 traditional_ddm_results_2_2_2.csv")
 
