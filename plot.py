@@ -30,12 +30,19 @@ def drawFigures(result, group: str = None, subj: str = None, sem: np.ndarray = N
         sem = np.zeros_like(result)
     margin = 0.05
     y_min = 0
-    if IV == 'rt':
-        y_max  =1200
-    elif IV == 'pressDuration':
-        y_max = 300
-    elif IV == 'v':
-        y_min, y_max = -9, 9
+    yRange = {
+        'rt': (0, 1200),
+        'pressDuration': (0, 300),
+        'v': (-9, 9),
+        'a': (0, 6),
+        'sigma':(0,2.2),
+        'x0':(-1,1),
+        'nondectime':(0, 0.6)
+    }
+    y_min, y_max = yRange.get(IV, (None, None))
+    
+    assert None not in (y_min, y_max), f"yRange for IV '{IV}' is not defined."
+
     fig = figure()
     ax1 = fig.add_axes([0.1,0.1,0.4,0.8])
     ax2 = fig.add_axes([0.5,0.1,0.4,0.8])
@@ -92,7 +99,7 @@ def plotFigures(IV:str = None):
     elif IV == 'pressDuration':
         column = 'pressDuration'
         dfRaw = dfRaw[(dfRaw['rt']<2000) & (dfRaw['rt']>100)]
-    elif IV == 'v':
+    else:
         column = IV
 
     groupBy = ['group','subj_idx','induction','prime_valence','target_valence']
@@ -102,6 +109,7 @@ def plotFigures(IV:str = None):
     if IV == 'rt':
         dfGrouped.rename(columns={'错误补救后按键反应时(ms)':'rt'}, inplace=True)
         column = 'rt'
+    
     dfGrouped['condition'] = (
         dfGrouped['induction'] + '_' +
         dfGrouped['prime_valence'] + '_' +
@@ -114,10 +122,6 @@ def plotFigures(IV:str = None):
                         columns='condition',
                         values=column)
             .reset_index())
-
-    # 3. （可选）让列名更简洁
-    # dfGrouped.columns.name = None   # 去掉列索引名
-    # print(dfGrouped)
 
     dfGrouped.to_csv(os.path.join(FIGURE_PATH, IV, f'{IV}_grouped.csv'), index=False, encoding='gb18030')
     dfGrouped_wide.to_csv(os.path.join(FIGURE_PATH, IV, f'{IV}_grouped_wide.csv'), index=False, encoding='gb18030')
@@ -134,13 +138,15 @@ def plotFigures(IV:str = None):
             drawFigures(result, group, subj, IV=IV)
         results_mean = results.mean(axis=0)
         results_sem = results.std(axis=0) / np.sqrt(results.shape[0])
-        drawFigures(results_mean, group=group, subj='mean',sem=results_sem,IV = IV)
+        drawFigures(results_mean, group=group, subj='mean',sem=results_sem, IV = IV)
 
 def main():
     setPath()
     plotFigures(IV = 'rt')
     plotFigures(IV = 'pressDuration')
-    plotFigures(IV = 'v')
+    ddmParams = ['v','sigma','a','x0','nondectime']
+    for param in ddmParams:
+        plotFigures(IV = param)
 
 
 if __name__ == '__main__':

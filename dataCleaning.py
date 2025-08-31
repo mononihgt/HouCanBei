@@ -4,7 +4,7 @@ from tqdm import tqdm
 
 def defineUnqualifiedSubjects():
     global unqualifiedSubjects
-    unqualifiedSubjects = ['55758322','55760307','55916641']
+    unqualifiedSubjects = ['55758322','55760307','55916641','55862633']
 
 def setPaths():
     global DIRNAME, DATA_PATH, RESULT_PATH

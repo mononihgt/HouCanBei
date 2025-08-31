@@ -11,6 +11,9 @@ def main():
 
     subprocess.run(['python','plot.py'], cwd=DIRNAME)
 
+    subprocess.run(['python','corrPrimeIndexWithScale.py'], cwd=DIRNAME)
+
+
 
 if __name__ == '__main__':
     main()
