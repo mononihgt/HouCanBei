@@ -42,8 +42,7 @@ def readData(fileDir):
 
 
 def plotFigure1():
-    fig  = figure()
-    ax = fig.add_subplot(111)
+    fig = figure(figsize=(12,6))
     groups = df['group'].unique()
     allDataShape = {}
     allDataEmotion = {}
@@ -53,65 +52,132 @@ def plotFigure1():
         allDataShape[group] = dfGroup['shape_pos-neg'].values
         allDataEmotion[group] = dfGroup['emotion_pos-neg'].values
 
-    fig = figure(figsize=(12,6))
     ax = fig.add_subplot(111)
-    y_min,y_max = (0,0)
+    y_min, y_max = (0, 0)
+    
+    bar_width = 0.6
     for i, group in enumerate(groups):
         dataEmotion = allDataEmotion[group]
         dataShape = allDataShape[group]
-        partShape = ax.violinplot(dataShape, positions=[i*3+0.5], showmeans=True, showmedians=False, widths=0.6)
-        partEmotion = ax.violinplot(dataEmotion, positions=[i*3-0.5], showmeans=True, showmedians=False, widths=0.6)
+        
+        # Calculate means and standard errors
+        shape_mean = np.mean(dataShape)
+        shape_error = np.std(dataShape) / np.sqrt(len(dataShape))
+        emotion_mean = np.mean(dataEmotion)
+        emotion_error = np.std(dataEmotion) / np.sqrt(len(dataEmotion))
+        
+        # Create bar plots instead of violin plots
+        ax.bar(i*3+0.5, shape_mean, width=bar_width, yerr=shape_error, color='#1f77b4', capsize=5, label='形状任务' if i == 0 else '')
+        ax.bar(i*3-0.5, emotion_mean, width=bar_width, yerr=emotion_error, color='#ff7f0e', capsize=5, label='情绪任务' if i == 0 else '')
+        
         if i != len(groups)-1:
-            ax.vlines([i*3+1.5], ymin=-500,  ymax=500, colors='#aaaaaa', linestyles='--', lw=1)
-        from matplotlib.lines import Line2D
-        proxy_shape   = Line2D([], [], color='#1f77b4', lw=2)   # 颜色可改
-        proxy_emotion = Line2D([], [], color='#ff7f0e', lw=2)
+            ax.vlines([i*3+1.5], ymin=-500, ymax=500, colors='#aaaaaa', linestyles='--', lw=1)
 
-        ax.legend([proxy_shape, proxy_emotion],
-          ['形状任务', '情绪任务'],title = '注意诱导任务',loc = 'upper left')
+        y_min = min(y_min, shape_mean - shape_error, emotion_mean - emotion_error)
+        y_max = max(y_max, shape_mean + shape_error, emotion_mean + emotion_error)
 
-        lines = ['cmins','cmaxes','cmeans','cbars']
-        for line in lines:
-            partShape[line].set_color('#1f77b4')
-            partEmotion[line].set_color('#ff7f0e')
-
-        for pc in partShape['bodies']:
-            pc.set_facecolor('#1f77b4')
-
-        for pc in partEmotion['bodies']:
-            pc.set_facecolor('#ff7f0e')
-            
-
-        y_min = min(y_min, min(dataShape), min(dataEmotion))
-        y_max = max(y_max, max(dataShape), max(dataEmotion))
+    
+    # Add horizontal line at y=0
+    ax.axhline(y=0, color='black', linestyle='-', linewidth=1.0)
+    
+    # Hide top, right and bottom spines
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['bottom'].set_visible(False)
+    
+    # Legend
+    ax.legend(title='注意诱导任务', loc='upper left')
     
     ax.set_xticks([i*3 for i in range(len(groups))])
-
     ax.set_xticklabels(groups, fontdict={'size': 14})
     x_min, x_max = ax.get_xlim()  
     dx = x_max - x_min
     ax.set_xlim(x_min - 0.01*dx, x_max - 0.01*dx)
-    ax.tick_params(axis='x', which = 'both',length = 8, color = '#ffffff')
+    ax.tick_params(axis='x', which='both', length=8, color='#ffffff')
 
     dy = y_max-y_min
     ax.set_ylim(y_min - 0.18*dy, y_max + 0.18*dy)
-    ax.set_ylabel('反应时差值（ms）',fontdict={'size': 16})
+    ax.set_ylabel('反应时差值（ms）', fontdict={'size': 16})
+    ax.set_title('积极情绪阈下启动与消极情绪阈下启动的反应时差值', fontdict={'size': 20}, pad=15)
 
-    ax.set_title('积极情绪阈下启动与消极情绪阈下启动的差值',fontdict={'size': 20},pad = 15)
-
-    fig.savefig(os.path.join(FIGURE_PATH, 'figure1.png'),bbox_inches='tight')
+    fig.savefig(os.path.join(FIGURE_PATH, 'figure1.png'), bbox_inches='tight')
     plt.close(fig)
 
+def plotFigure2():
+    fig = figure(figsize=(12,8))
+    ax1 = fig.add_subplot(211)
+    ax2 = fig.add_subplot(212)
+    groups = df['group'].unique()
+    allDataShape = {}
+    allDataEmotion = {}
+    
+    for group in groups:
+        dfGroup = df[df['group'] == group]
+        allDataShape[group] = dfGroup['shape_pos-neg'].values
+        allDataEmotion[group] = dfGroup['emotion_pos-neg'].values
+
+    y_min, y_max = (0, 0)
+    bar_width = 0.6
+    
+    for i, group in enumerate(groups):
+        dataEmotion = allDataEmotion[group]
+        dataShape = allDataShape[group]
+        
+        # Calculate means and standard errors
+        shape_mean = np.mean(dataShape)
+        shape_error = np.std(dataShape) / np.sqrt(len(dataShape))
+        emotion_mean = np.mean(dataEmotion)
+        emotion_error = np.std(dataEmotion) / np.sqrt(len(dataEmotion))
+        if i== 0:
+            # Create bar plots instead of violin plots
+            ax1.bar(i*1.5, shape_mean, width=bar_width, yerr=shape_error, color='#1f77b4', capsize=3,error_kw = {'linewidth': 1.0}, label='形状诱导任务')
+            ax2.bar(i*1.5, emotion_mean, width=bar_width, yerr=emotion_error, color='#ff7f0e', capsize=3, error_kw = {'linewidth': 1.0}, label='情绪诱导任务')
+        else:
+            ax1.bar(i*1.5, shape_mean, width=bar_width, yerr=shape_error, color='#1f77b4', capsize=3,error_kw = {'linewidth': 1.0})
+            ax2.bar(i*1.5, emotion_mean, width=bar_width, yerr=emotion_error, color='#ff7f0e', capsize=3,error_kw = {'linewidth': 1.0})
+
+        y_min = min(y_min, shape_mean - shape_error, emotion_mean - emotion_error)
+        y_max = max(y_max, shape_mean + shape_error, emotion_mean + emotion_error)
+
+    ax1.legend()
+    ax2.legend()
+
+    for ax in [ax1, ax2]:
+        # Add horizontal line at y=0
+        ax.axhline(y=0, color='black', linestyle='-', linewidth=1.0)
+        
+        # Hide top, right and bottom spines
+        # ax.spines['top'].set_visible(False)
+        # ax.spines['right'].set_visible(False)
+        # ax.spines['bottom'].set_visible(False)
+        
+
+        ax.set_xticks([i*1.5 for i in range(len(groups))])
+        ax.set_xticklabels(groups, fontdict={'size': 14})
+        ax.tick_params(axis='x', which='both', length=5, color="#000000")
+        # ax.set_title('情绪诱导任务时阈下启动的反应时差值', fontdict={'size': 16}, pad=5)
+
+        # ax.set_title('形状诱导任务时阈下启动的反应时差值', fontdict={'size': 16}, pad=5)
+
+        x_min, x_max = ax.get_xlim()
+        dx = x_max - x_min
+        ax.set_xlim(x_min - 0.04*dx, x_max + 0.04*dx)
+        dy = y_max-y_min
+        ax.set_ylim(y_min - 0.18*dy, y_max + 0.18*dy)
+        ax.set_ylabel('积极启动-消极启动反应时差值（ms）', fontdict={'size': 12})
+    
+
+    fig.savefig(os.path.join(FIGURE_PATH, 'figure2.png'), bbox_inches='tight')
+    plt.close(fig)
 
 def main():
     setPath()
     readData(fileDir=RESULT_PATH)
     deletePreviewsFigures(path=FIGURE_PATH)
     plotFigure1()
+    plotFigure2()
 
 if __name__ == '__main__':
     main()
-
-
 
 
