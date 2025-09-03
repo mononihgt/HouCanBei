@@ -105,8 +105,8 @@ def plotFigure1():
 
 def plotFigure2():
     fig = figure(figsize=(12,8))
-    ax1 = fig.add_subplot(211)
-    ax2 = fig.add_subplot(212)
+    ax1 = fig.add_subplot(121)
+    ax2 = fig.add_subplot(122)
     groups = df['group'].unique()
     allDataShape = {}
     allDataEmotion = {}
@@ -117,7 +117,7 @@ def plotFigure2():
         allDataEmotion[group] = dfGroup['emotion_pos-neg'].values
 
     y_min, y_max = (0, 0)
-    bar_width = 0.8
+    bar_width = 0.7
     
     for i, group in enumerate(groups):
         dataEmotion = allDataEmotion[group]
@@ -153,7 +153,7 @@ def plotFigure2():
         
 
         ax.set_xticks([i*1.5 for i in range(len(groups))])
-        ax.set_xticklabels(groups, fontdict={'size': 14})
+        ax.set_xticklabels(groups, fontdict={'size': 14},rotation=30)
         ax.tick_params(axis='x', which='both', length=5, color="#000000")
         # ax.set_title('情绪诱导任务时阈下启动的反应时差值', fontdict={'size': 16}, pad=5)
 
@@ -163,7 +163,7 @@ def plotFigure2():
         dx = x_max - x_min
         ax.set_xlim(x_min - 0.04*dx, x_max + 0.04*dx)
         dy = y_max-y_min
-        ax.set_ylim(y_min - 0.18*dy, y_max + 0.18*dy)
+        ax.set_ylim(y_min - 0.15*dy, y_max + 0.15*dy)
         ax.set_ylabel('积极启动-消极启动反应时差值（ms）', fontdict={'size': 12})
     
 
@@ -241,9 +241,9 @@ def plotFigure3():
     plt.close(fig)
 
 def plotFigure4():
-    fig = figure(figsize=(12,8))
-    ax1 = fig.add_subplot(211)
-    ax2 = fig.add_subplot(212)
+    fig = figure(figsize=(12,5))
+    ax1 = fig.add_subplot(121)
+    ax2 = fig.add_subplot(122)
     groups = df['group'].unique()
     allDataShapePos = {}
     allDataShapeNeg = {}
@@ -310,9 +310,9 @@ def plotFigure4():
     plt.close(fig)
 
 def plotFigure5():
-    fig = figure(figsize=(12,8))
-    ax1 = fig.add_subplot(211)
-    ax2 = fig.add_subplot(212)
+    fig = figure(figsize=(12,5))
+    ax1 = fig.add_subplot(121)
+    ax2 = fig.add_subplot(122)
     groups = df['group'].unique()
     allDataEmotionPos = {}
     allDataEmotionNeg = {}
