@@ -101,7 +101,8 @@ def main():
                 bound   = BoundConstant(B=Fittable(name='B', minval=0.3, maxval=3)),
                 IC      = ICPointRatio(x0=Fittable(name='x0', minval=-0.9, maxval=0.9)),
                 overlay = OverlayNonDecision(nondectime=Fittable(name='nondectime', minval=0.2, maxval=0.6)),
-                dt = 0.001
+                dt = 0.001,
+                T_dur=3
             )
             
             # 拟合模型
@@ -136,11 +137,11 @@ def main():
                     'induction': induction,
                     'prime_valence': prime_valence,
                     'target_valence': target_valence,
-                    'v': float(pars['drift']),
-                    'sigma': float(pars['noise']),
-                    'a': float(pars['B']) * 2,
-                    'x0': float(pars['x0']),
-                    'nondectime': float(pars['nondectime']),
+                    'v': np.nan,
+                    'sigma': np.nan,
+                    'a': np.nan,
+                    'x0': np.nan,
+                    'nondectime': np.nan,
                     'n_trials': len(condition_data),
                     'accuracy': condition_data['response'].mean(),
                     'group': group,

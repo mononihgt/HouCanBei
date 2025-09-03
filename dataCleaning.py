@@ -4,7 +4,8 @@ from tqdm import tqdm
 
 def defineUnqualifiedSubjects():
     global unqualifiedSubjects
-    unqualifiedSubjects = ['55758322','55760307','55916641','55862633']
+    # unqualifiedSubjects = ['55758322','55760307','55916641','55862633']
+    unqualifiedSubjects = []
 
 def setPaths():
     global DIRNAME, DATA_PATH, RESULT_PATH
@@ -66,7 +67,7 @@ def cleanData():
             df['response'] = df['response'].replace({'是':'1','否':'0'})
             df['induction'] = df['induction'].replace({'形状任务':'shape','情绪任务':'emotion'})
             df_raw = df.copy()
-            df = df[df['rt']<2000]
+            df = df[df['rt']<3000]
             
             thresholdOfFrame = df_3['刺激强度(帧)'].values[0]
             thresholdOfDuration = df_3['刺激时间(毫秒)'].values[0]
@@ -102,6 +103,46 @@ def cleanData():
     
     return
 
+def getSubjIndex():
+    global dfNameIndex
+
+    deletePreviewsFiles(os.path.join(RESULT_PATH,'scale'))
+
+    dfScale = pd.read_excel(os.path.join(DATA_PATH, 'scale', 'scale.xlsx'))
+    dfScale = dfScale[['您的姓名', '焦虑因子', '抑郁因子', '总分']]
+
+    name_index = []
+    for root, dirs, files in os.walk(DATA_PATH, topdown=False):
+        for file in tqdm(files):
+            if 'exp' not in file:
+                continue
+            index = str(file[:-5].split('_')[-1])
+            df = pd.read_excel(os.path.join(root, file),sheet_name='被试信息')
+            name = df.iloc[-1,-1]
+            info = {
+                'name': name,
+                'subj_idx': index
+            }
+            name_index.append(info)
+    
+    dfNameIndex = pd.DataFrame(name_index)
+    dfNameIndex['anxiety'] = None
+    dfNameIndex['depression'] = None
+    dfNameIndex['HAMD'] = None
+    for i, row in dfNameIndex.iterrows():
+        name = row['name']
+        if name =='张楚晨':
+            continue
+        row['anxiety'] = dfScale[dfScale['您的姓名'] == name]['焦虑因子'].values[0]
+        row['depression'] = dfScale[dfScale['您的姓名'] == name]['抑郁因子'].values[0]
+        row['HAMD'] = dfScale[dfScale['您的姓名'] == name]['总分'].values[0]
+        
+        dfNameIndex.iloc[i] = row
+    
+    dfNameIndex.to_excel(os.path.join(RESULT_PATH,'scale','name_index.xlsx'), index=False)
+    
+    return
+
 if __name__ == '__main__':
     setPaths()
     defineUnqualifiedSubjects()
@@ -109,3 +150,4 @@ if __name__ == '__main__':
     deletePreviewsFiles(os.path.join(RESULT_PATH,'visibilityTest'))
     createResultDirectories()
     cleanData()
+    getSubjIndex()

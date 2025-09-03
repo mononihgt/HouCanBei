@@ -42,7 +42,7 @@ def readData(fileDir):
 
 
 def plotFigure1():
-    fig = figure(figsize=(12,6))
+    fig = figure(figsize=(12,5))
     groups = df['group'].unique()
     allDataShape = {}
     allDataEmotion = {}
@@ -89,7 +89,7 @@ def plotFigure1():
     ax.legend(title='注意诱导任务', loc='upper left')
     
     ax.set_xticks([i*3 for i in range(len(groups))])
-    ax.set_xticklabels(groups, fontdict={'size': 14})
+    ax.set_xticklabels(groups, fontdict={'size': 12})
     x_min, x_max = ax.get_xlim()  
     dx = x_max - x_min
     ax.set_xlim(x_min - 0.01*dx, x_max - 0.01*dx)
@@ -104,7 +104,7 @@ def plotFigure1():
     plt.close(fig)
 
 def plotFigure2():
-    fig = figure(figsize=(12,8))
+    fig = figure(figsize=(12,5))
     ax1 = fig.add_subplot(121)
     ax2 = fig.add_subplot(122)
     groups = df['group'].unique()
@@ -153,7 +153,7 @@ def plotFigure2():
         
 
         ax.set_xticks([i*1.5 for i in range(len(groups))])
-        ax.set_xticklabels(groups, fontdict={'size': 14},rotation=30)
+        ax.set_xticklabels(groups, fontdict={'size': 12},rotation=30)
         ax.tick_params(axis='x', which='both', length=5, color="#000000")
         # ax.set_title('情绪诱导任务时阈下启动的反应时差值', fontdict={'size': 16}, pad=5)
 
@@ -223,7 +223,7 @@ def plotFigure3():
         
 
         ax.set_xticks([i*1.2 for i in range(len(groups))])
-        ax.set_xticklabels(groups, fontdict={'size': 14})
+        ax.set_xticklabels(groups, fontdict={'size': 12})
         ax.tick_params(axis='x', which='both', length=5, color="#000000")
         # ax.set_title('情绪诱导任务时阈下启动的反应时差值', fontdict={'size': 16}, pad=5)
 
@@ -292,7 +292,7 @@ def plotFigure4():
         
 
         ax.set_xticks([i*1.2 for i in range(len(groups))])
-        ax.set_xticklabels(groups, fontdict={'size': 14})
+        ax.set_xticklabels(groups, fontdict={'size': 12})
         ax.tick_params(axis='x', which='both', length=5, color="#000000")
         # ax.set_title('情绪诱导任务时阈下启动的反应时差值', fontdict={'size': 16}, pad=5)
 
@@ -361,7 +361,7 @@ def plotFigure5():
         
 
         ax.set_xticks([i*1.2 for i in range(len(groups))])
-        ax.set_xticklabels(groups, fontdict={'size': 14})
+        ax.set_xticklabels(groups, fontdict={'size': 12})
         ax.tick_params(axis='x', which='both', length=5, color="#000000")
         # ax.set_title('情绪诱导任务时阈下启动的反应时差值', fontdict={'size': 16}, pad=5)
 

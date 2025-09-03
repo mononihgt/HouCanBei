@@ -13,6 +13,7 @@ def main():
 
     subprocess.run(['python','corrPrimeIndexWithScale.py'], cwd=DIRNAME)
 
+    
 
 
 if __name__ == '__main__':

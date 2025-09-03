@@ -31,7 +31,7 @@ def deletePreviewsFiles(path:str=None):
 def getSubjIndex():
     global dfNameIndex
 
-    deletePreviewsFiles(os.path.join(RESULT_PATH,'scale'))
+    # deletePreviewsFiles(os.path.join(RESULT_PATH,'scale'))
 
     dfScale = pd.read_excel(os.path.join(DATA_PATH, 'scale', 'scale.xlsx'))
     dfScale = dfScale[['您的姓名', '焦虑因子', '抑郁因子', '总分']]
@@ -90,8 +90,8 @@ def calculatePrimeIndex():
                                                                                                                                                                                                                                                                                                                                                            
             df = df.merge(dfNameIndex, on='subj_idx', how='left')
 
-            df.drop(columns=['name'], inplace=True)
-            df.to_csv(os.path.join(RESULT_PATH,'scale', f'{file[:-4]}_with_scale.csv'), index=False)
+            # df.drop(columns=['name'], inplace=True)
+            df.to_excel(os.path.join(RESULT_PATH,'scale', f'{file[:-4]}_with_scale.xlsx'), index=False)
 
         # emotion_negative_negative	emotion_negative_positive	emotion_positive_negative	emotion_positive_positive	shape_negative_negative	shape_negative_positive	shape_positive_negative	shape_positive_positive
 

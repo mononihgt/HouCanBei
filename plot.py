@@ -94,11 +94,11 @@ def plotFigures(IV:str = None):
 
     if IV == 'rt':
         column = '错误补救后按键反应时(ms)'
-        dfRaw = dfRaw[dfRaw[column]<2000]
+        dfRaw = dfRaw[dfRaw[column]<3000]
 
     elif IV == 'pressDuration':
         column = 'pressDuration'
-        dfRaw = dfRaw[(dfRaw['rt']<2000) & (dfRaw['rt']>100)]
+        dfRaw = dfRaw[(dfRaw['rt']<3000) & (dfRaw['rt']>100)]
     else:
         column = IV
 
