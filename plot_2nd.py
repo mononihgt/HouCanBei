@@ -172,9 +172,9 @@ def plotFigure2():
 
 
 def plotFigure3():
-    fig = figure(figsize=(12,8))
-    ax1 = fig.add_subplot(211)
-    ax2 = fig.add_subplot(212)
+    fig = figure(figsize=(12,5))
+    ax1 = fig.add_subplot(121)
+    ax2 = fig.add_subplot(122)
     groups = df['group'].unique()
     allDataShape = {}
     allDataEmotion = {}
@@ -187,7 +187,7 @@ def plotFigure3():
         allDataEmotion[group] = dfGroup['emotion_pos-neg'].values
 
     y_min, y_max = (0, 0)
-    bar_width = 0.5
+    bar_width = 0.6
     
     for i, group in enumerate(groups):
         dataEmotion = allDataEmotion[group]
@@ -430,7 +430,7 @@ def main():
     plotFigure3()
     plotFigure4()
     plotFigure5()
-    plotCorrelation()
+    # plotCorrelation()
 
 if __name__ == '__main__':
     main()
