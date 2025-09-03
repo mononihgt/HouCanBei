@@ -78,15 +78,20 @@ def calculatePrimeIndex():
 
             df['subj_idx'] = df['subj_idx'].astype(str)
 
-            df['emotion_positivePrime'] = df['emotion_positive_negative'] - df['emotion_positive_positive']
-            df['emotion_negativePrime'] = df['emotion_negative_negative'] - df['emotion_negative_positive']
-            df['shape_positivePrime'] = df['shape_positive_negative'] - df['shape_positive_positive']
-            df['shape_negativePrime'] = df['shape_negative_negative'] - df['shape_negative_positive']
+            df['emotion_positivePrimeIndex'] = df['emotion_positive_negative'] - df['emotion_positive_positive']
+            df['emotion_negativePrimeIndex'] = df['emotion_negative_negative'] - df['emotion_negative_positive']
+            df['shape_positivePrimeIndex'] = df['shape_positive_negative'] - df['shape_positive_positive']
+            df['shape_negativePrimeIndex'] = df['shape_negative_negative'] - df['shape_negative_positive']
 
+            df['shape_positivePrime-negativePrime'] = df['shape_positive_negative'] + df['shape_positive_positive'] - (df['shape_negative_negative'] + df['shape_negative_positive'])
+            df['emotion_positivePrime-negativePrime'] = df['emotion_positive_negative'] + df['emotion_positive_positive'] - (df['emotion_negative_negative'] + df['emotion_negative_positive'])
+
+            df['test'] = df['emotion_positivePrimeIndex'] - df['emotion_negativePrimeIndex'] + df['shape_positivePrimeIndex'] - df['shape_negativePrimeIndex']
+                                                                                                                                                                                                                                                                                                                                                           
             df = df.merge(dfNameIndex, on='subj_idx', how='left')
 
             df.drop(columns=['name'], inplace=True)
-            df.to_csv(os.path.join(RESULT_PATH,'scale', f'{file}_with_scale.csv'), index=False)
+            df.to_csv(os.path.join(RESULT_PATH,'scale', f'{file[:-4]}_with_scale.csv'), index=False)
 
         # emotion_negative_negative	emotion_negative_positive	emotion_positive_negative	emotion_positive_positive	shape_negative_negative	shape_negative_positive	shape_positive_negative	shape_positive_positive
 
